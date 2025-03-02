@@ -1,5 +1,10 @@
-const myLibrary = [{title:"Cat and the Hat",author: 'harry', pages:50, readStatus:true}, {title:"Story of My Life", author: 'bob', pages:45, readStatus:true}];
+const myLibrary = [{title:"Cat and the Hat",author: 'harry', pages:50, readStatus:'read'}, {title:"Story of My Life", author: 'bob', pages:45, readStatus:'Haven\'t started'}];
 const container = document.querySelector('#container');
+
+const dialog = document.querySelector('#dialog');
+const myForm = document.querySelector('#myForm');
+const confirm = document.querySelector('#confirmBtn');
+const select = document.querySelector('select');
 
 function Book(title, author,pages,readStatus){
     this.title = title;
@@ -8,12 +13,14 @@ function Book(title, author,pages,readStatus){
     this.readStatus = readStatus;
 }
 
-function addBookToLibrary(author,pages,readStatus){
-    let book = new Book(author,pages,readStatus);
+function addBookToLibrary(book){
     myLibrary.push(book);
+    
 }
 
 function loopLibrary(){
+    //clear container after each submit
+    container.innerHTML ='';
     myLibrary.forEach(function(item){
         const book = document.createElement("div");
         book.className += " book";
@@ -43,12 +50,42 @@ function loopLibrary(){
         container.appendChild(book);
     });
 
-    const form = document.createElement("div");
-    form.id = "form";
-    form.innerHTML="Open Form";
-    container.appendChild(form);
+    const goForm = document.createElement("div");
+    goForm.id = "goForm";
+    goForm.innerHTML="+";
+    container.appendChild(goForm);
+
+    //clicking + sign opens dialog
+    goForm.addEventListener("click",() => {
+        dialog.showModal();
+    });
 
 
 }
+
+
+//get rid of default submit and send select value to close event listener
+confirmBtn.addEventListener("click",(event)=>{
+    event.preventDefault();
+    const formObj = new Book();
+    //make array of obj name:value
+    const form = document.querySelector('#myForm');
+    const formData = new FormData(myForm);
+
+    formData.forEach((value,key) => {
+        console.log(`key: ${key} , value: ${value}`);
+        formObj[key] = value;
+        console.log(JSON.stringify(formObj));
+
+    });
+    dialog.close(JSON.stringify(formObj));
+});
+
+dialog.addEventListener("close",(event)=>{
+
+    const bookObj = JSON.parse(dialog.returnValue);
+    addBookToLibrary(bookObj);
+    loopLibrary();
+});
 
 loopLibrary();
