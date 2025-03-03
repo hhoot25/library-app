@@ -14,29 +14,29 @@
     <div id="container"></div>
     <dialog id="dialog">
         <form id="myForm">
-            <p>
-                <label for="title">Title:</label>
+            <p class="horizontal">
+                <label for="title">Title</label>
                 <input name="title" type="text">
             </p>
-            <p>
-                <label for="author">Author:</label>
+            <p class="horizontal">
+                <label for="author">Author</label>
                 <input name ='author' type="text">
             </p>
-            <p>
-                <label for="pages">Pages:</label>
+            <p class="horizontal">
+                <label for="pages">Pages</label>
                 <input type="number" name='pages'>
             </p>
-            <p>
+            <p class="horizontal">
                 <label for="readStatus">Status</label>
                 <select name="readStatus">
                     <option value="Unselected">Choose...</option>
-                    <option value="read">Finished</option>
-                    <option value="currently">Reading</option>
-                    <option value="unread">Haven't started</option>
+                    <option value="Read">Finished</option>
+                    <option value="Currently Reading">Reading</option>
+                    <option value="Unread">Haven't started</option>
                 </select>
             </p>
-            <div>
-                <button value="cancel" formmethod="dialog">Cancel</button>
+            <div class="horizontal">
+                <button id = "cancelBtn" value="cancel" formmethod="dialog">Cancel</button>
                 <button id="confirmBtn" value="default">Confirm</button>
             </div>
         </form>

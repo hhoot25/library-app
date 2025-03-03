@@ -1,4 +1,4 @@
-const myLibrary = [{title:"Cat and the Hat",author: 'harry', pages:50, readStatus:'read'}, {title:"Story of My Life", author: 'bob', pages:45, readStatus:'Haven\'t started'}];
+const myLibrary = [];
 const container = document.querySelector('#container');
 
 const dialog = document.querySelector('#dialog');
@@ -6,12 +6,26 @@ const myForm = document.querySelector('#myForm');
 const confirm = document.querySelector('#confirmBtn');
 const select = document.querySelector('select');
 
+let index = 0;
+
 function Book(title, author,pages,readStatus){
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.readStatus = readStatus;
 }
+
+Book.prototype.changeStatus = function() {
+    if (this.readStatus === "Read") {
+        this.readStatus = "Unread";
+
+    } else if (this.readStatus === "Unread") {
+        this.readStatus = "Currently Reading";
+    } else {
+        this.readStatus = "Read";
+    }
+    loopLibrary();
+};
 
 function addBookToLibrary(book){
     myLibrary.push(book);
@@ -21,9 +35,10 @@ function addBookToLibrary(book){
 function loopLibrary(){
     //clear container after each submit
     container.innerHTML ='';
-    myLibrary.forEach(function(item){
+    for(let i = 0; i < myLibrary.length; i++){
         const book = document.createElement("div");
         book.className += " book";
+        item = myLibrary[i];
 
         const title = document.createElement("div");
         title.className += "title";
@@ -38,17 +53,42 @@ function loopLibrary(){
         pages.innerHTML = `Pages: ${item.pages}`;
 
 
-        const read = document.createElement("div");
-        read.className += "read";
-        read.innerHTML = `Read Status: ${item.readStatus}`;
+        const read = document.createElement("btn");
+        if (item.readStatus === "Read") {
+            read.className += "read";
+        }
+        if (item.readStatus === "Unread") {
+            read.className += "unread";
+        }
+        if (item.readStatus === "Currently Reading"){
+            read.className += "current";
+        }
+        read.innerHTML = `${item.readStatus}`;
+
+        const del = document.createElement("btn");
+        del.className += "delete";
+        del.innerHTML = "x";
+
+        book.dataset.index = i;
+
+        del.addEventListener("click",() => {
+            myLibrary.splice(parseInt(book.dataset.index),1);
+            loopLibrary();
+
+        });
+
+        read.addEventListener("click",()=>{
+            myLibrary[i].changeStatus();
+        });
 
         book.appendChild(title);
         book.appendChild(author);
         book.appendChild(pages);
         book.appendChild(read);
+        book.appendChild(del);
 
         container.appendChild(book);
-    });
+    };
 
     const goForm = document.createElement("div");
     goForm.id = "goForm";
@@ -67,24 +107,27 @@ function loopLibrary(){
 //get rid of default submit and send select value to close event listener
 confirmBtn.addEventListener("click",(event)=>{
     event.preventDefault();
-    const formObj = new Book();
-    //make array of obj name:value
-    const form = document.querySelector('#myForm');
+
+    // Collect form data properly
     const formData = new FormData(myForm);
+    const title = formData.get("title");
+    const author = formData.get("author");
+    const pages = formData.get("pages");
+    const readStatus = formData.get("readStatus");
 
-    formData.forEach((value,key) => {
-        console.log(`key: ${key} , value: ${value}`);
-        formObj[key] = value;
-        console.log(JSON.stringify(formObj));
+    // Create a new Book instance with correct arguments
+    const bookObj = new Book(title, author, pages, readStatus);
 
-    });
-    dialog.close(JSON.stringify(formObj));
+    dialog.close(JSON.stringify(bookObj));
 });
 
-dialog.addEventListener("close",(event)=>{
-
+dialog.addEventListener("close", (event) => {
     const bookObj = JSON.parse(dialog.returnValue);
-    addBookToLibrary(bookObj);
+    
+    // Convert plain object to a Book instance
+    const book = new Book(bookObj.title, bookObj.author, bookObj.pages, bookObj.readStatus);
+    
+    addBookToLibrary(book);
     loopLibrary();
 });
 
