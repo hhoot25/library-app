@@ -7,12 +7,22 @@ const confirm = document.querySelector('#confirmBtn');
 const select = document.querySelector('select');
 
 let index = 0;
+//restructured to class
+// function Book(title, author,pages,readStatus){
+//     this.title = title;
+//     this.author = author;
+//     this.pages = pages;
+//     this.readStatus = readStatus;
+// }
 
-function Book(title, author,pages,readStatus){
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.readStatus = readStatus;
+class Book{
+    constructor(title, author,pages,readStatus){
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.readStatus = readStatus;
+    }
+
 }
 
 Book.prototype.changeStatus = function() {
