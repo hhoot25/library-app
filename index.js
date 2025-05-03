@@ -6,6 +6,14 @@ const myForm = document.querySelector('#myForm');
 const confirm = document.querySelector('#confirmBtn');
 const select = document.querySelector('select');
 
+//selecting inputs
+const title = document.querySelector("#title");
+const author = document.querySelector("#author");
+const pages = document.querySelector("#pages");
+
+//select error msg
+const titleError = document.querySelector("#title + span.error");
+
 let index = 0;
 //restructured to class
 // function Book(title, author,pages,readStatus){
@@ -118,6 +126,12 @@ function loopLibrary(){
 confirmBtn.addEventListener("click",(event)=>{
     event.preventDefault();
 
+    //check if form is valid
+    if (!myForm.checkValidity()) {
+        showError();
+        return;
+    }
+
     // Collect form data properly
     const formData = new FormData(myForm);
     const title = formData.get("title");
@@ -128,6 +142,7 @@ confirmBtn.addEventListener("click",(event)=>{
     // Create a new Book instance with correct arguments
     const bookObj = new Book(title, author, pages, readStatus);
 
+    
     dialog.close(JSON.stringify(bookObj));
 });
 
@@ -140,5 +155,41 @@ dialog.addEventListener("close", (event) => {
     addBookToLibrary(book);
     loopLibrary();
 });
+
+
+//input error handling
+title.addEventListener("input", (event) => {
+    if(title.validity.valid) {
+        titleError.textContent = "";
+        titleError.className = "error";
+    }else {
+        showError();
+        console.log("there is error in input");
+    }
+});
+
+myForm.addEventListener("submit", (event) => {
+    if(!title.validity.valid){
+        showError();
+
+        event.preventDefault();
+    }
+});
+
+function showError() {
+    if (title.validity.valueMissing){
+        titleError.textContent = "Need to enter title";
+    }
+    else if (title.validity.tooShort){
+        titleError.textContent =  `Title need to be atleast ${title.minLength}`;
+    }
+
+    titleError.className = "error active";
+}
+
+
+
+
+
 
 loopLibrary();

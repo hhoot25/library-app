@@ -13,18 +13,20 @@
 <body>
     <div id="container"></div>
     <dialog id="dialog">
-        <form id="myForm">
+        <form id="myForm" novalidate>
             <p class="horizontal">
                 <label for="title">Title</label>
-                <input name="title" type="text">
+                <input id="title" name="title" type="text" required minlength="4">
+                <span class="error" aria-live="polite"></span>
             </p>
             <p class="horizontal">
                 <label for="author">Author</label>
-                <input name ='author' type="text">
+                <input id="author" name ='author' type="text">
+                <span class="error" aria-live="polite"></span>
             </p>
             <p class="horizontal">
                 <label for="pages">Pages</label>
-                <input type="number" name='pages'>
+                <input id="pages" type="number" name='pages'>
             </p>
             <p class="horizontal">
                 <label for="readStatus">Status</label>
